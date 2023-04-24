@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <style>
+        body {
+            background-color: white;
+            padding: 100px;
+            width: 1000px;
+            margin: auto;
+            text-align: left;
+            font-weight: 300;
+            font-family: 'Open Sans', sans-serif;
+            color: #121212;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        kbd {
+            color: #121212;
+        }
+    </style>
+    <title>CS 184 Final Project Proposal</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+
+</head>
+
+
+<body>
+
+    <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2023</h1>
+    <h1 align="middle">Final Project: Minecraft Path Tracing and Physically Based Renderer</h1>
+    <h2 align="middle">Oren Azad, Omer Sasson, Varun Srivastava, Arthur Pan</h2>
+    <h3 align="middle">Website Link: https://orenazad.github.io/cs184-Final-Project-Proposal/</h3>
+
+    <h3 align="middle">Summary</h3>
+
+    <p>The primary goal of this project is to extend CS184's path tracer to support beautifully rendering minecraft
+        worlds and small builds by importing minecraft scenes into the path tracer. Ideally, the path tracer is able to handle intricate and small scenes with a high level
+        of detail and light quality, but we would also potentially like to investigate support for wider scenes of
+        several minecraft chunks to display landscapes.</p>
+
+    <h3 align="middle">Problem Description</h3>
+
+    <p>We enjoyed working on the Path Tracer and seeing beautifully rendered final results. We thought it would be great
+        to be able to extend the functionality of the path tracer with texture support, but also wanted to render
+        something cool that we could be excited about. Rendering our own minecraft builds also gives the ability to
+        easily create scenes ourselves and bring them to life in the Path Tracer. Additionally, latest versions of
+        Minecraft have included real-time Path Tracing, so PBR (physically based rendering) texturepacks for Minecraft are widespread. We will be
+        able to use these texture packs to add more than just texture functionality, but also things like metallic and
+        roughness maps! Finally, Minecraft without shaders is quite static and boring lighting-wise, and it would be
+        exciting to see it in a <i>new light</i>.</p>
+
+    <br>
+    <p>
+        Much of the nuance in this project will be in the full details of PBR. Minecraft texture packs typically have 5
+        additional maps on top of the texture itself:
+        <br>
+    <ul>
+        <li>Metallic Map</li>
+        <li>Emissive Map</li>
+        <li>Roughness Map</li>
+        <li>Normal Map</li>
+        <li>Height Map - Typically unused in wake of Normal Maps.</li>
+    </ul>
+    <br>
+    In particular, Emissive maps stand out as something that could be quite difficult to extend to our path tracer.
+
+    <br><br>
+    Further, we will also need to make sure we can properly import all this data in the first place. This will
+    require us to extend the COLLADA parser that is already there, or replace it will a new library such as <i>
+        assimp</i> or <i>tinyobj</i>. Additionally, Minecraft has many blocks with lighting in specific manners. For
+    example, the new candle blocks. Without knowing how exactly our tools will import this, it is unlikely we will
+    be able to handle every configuration automatically, and some work will need to be done in blender before
+    rendering.
+    <br>
+
+    Finally, if feasible beyond the workload of the rest of the project we would like to investigate some sort of
+    larger rendering capability. We feel that this may be difficult due to Minecraft's current method of global
+    lighting. There will need to be some sort of light done to replicate the sun's in-game lighting.
+    </p>
+
+    <h3 align="middle">Goals and Deliverables</h3>
+
+    <p>The primary goal of this project is to extend the Path Tracer with textures, and ideally PBR texture packs. The
+        goal is to be able to create pleasing images of Minecraft world's or builds that we wouldn't be able to see
+        otherwise. Since Minecraft typically hasn't been a path traced game, lighting effects like reflection,
+        refraction, depth of field, and non-block-based lighting would be an entirely new way to view builds. We hope to
+        create images like the two (primarily the first) below:
+    </p>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/Zak_Fynn-Winter_Ambience.jpeg" align="middle" width="400px" />
+                </td>
+                <td>
+                    <img src="images/firehart-Mountain_forest_TIMG.jpg" align="middle" width="400px" />
+                </td>
+            </tr>
+            <br>
+        </table>
+    </div>
+    <br>
+
+    <p>In the first image, notice everything that isn't there in Minecraft. Depth of field, lighting and shadows that
+        actually makes sense (notice the left side of the lectern,where the half-slab casts a tiny shadow). The shadow
+        of the plant on the wall, and the candles reflecting in the glass.</p>
+
+    <p>Its tough to say how we may evaluate the results out of the Path Tracer, other than "by looks". However, one goal
+        we can keep in mind is to keep the project performant, and also to stylistically not drag ourselves to far away
+        from what we expect Minecraft to look like.</p>
+
+    <p> To summarize, what we plan to deliver: A Path Tracer that is able to render small but detailed scenes like the
+        first image above. In order to do this, we need to first and foremost build the infrastructure to import and
+        support minecraft builds and lighting into the renderer. Then, we must build support for regular texture maps.
+        Finally, we will add support for PBR texture maps where possible, such as metallic maps and roughness maps. We
+        plan to add emissive maps aswell but see this as having the potential to be a larger problem than expected.
+        Importantly, we would like to do all of this while keeping the program performant.
+    </p>
+
+    <p>If all goes well: Add support for more blocks that might be more complicated, such as water or . This wouldn't be
+        similiar to raytracing an actual water material physically, as we aim to keep the style of minecraft. Still, it
+        would be additional work. Further, we would also like to look into some sort of global illumination in order to
+        be able to render larger scenes that don't have actual lights placed everywhere, such as landscapes.</p>
+
+    <h3 align="middle">Schedule</h3>
+    <p>
+    <uL>
+        <li>
+            Week 1:
+            - Implement functionality in order to import DAE or OBJ files from Minecraft worlds.
+            - Start Implementing Textures into the Path Tracer, this can be done in parallel.
+        </li>
+        <li>
+            Week 2:
+            - Finish Texture maps.
+            - Move onto support for PBR maps, such as normals, roughness, metallic, etc.
+        </li>
+        <li>
+            Week 3:
+            - Finish PBR maps, specifically nuanced points like glass materials and so on.
+            - Work on emissive maps and overall lighting to make improvements where possible and use a variety of
+            different
+            light sources from minecraft.
+        </li>
+        <li>
+            Week 4:
+            - Wrap up any issues we run into, polish where needed (again, small details like the textures behind lights
+            on
+            candles and so on)
+            - Investigate possible stretch goals.
+        </li>
+    </uL>
+    </p>
+
+    <h3 align="middle">Resources</h3>
+
+    <p>Luckily, there are plenty of good resources on Path tracing out there. In fact, Microsoft has published some
+        specifics on <a href="https://learn.microsoft.com/en-us/minecraft/creator/documents/rtxpbrintro">PBR in
+            Minecraft</a>. Additionally, a few Minecraft path-tracers exist already, such as <a
+            href="https://chunky-dev.github.io/gallery/">Chunky</a>. These may be useful in navigating Minecraft
+        specific nuances, like how certain textures or models work. There are also some free books available on PBR such
+        as <a href="https://pbrt.org/">PBRT</a>. Finally, there are also many resources available form other courses
+        (and our own!) on Path Tracing and specifically using Textures, <a
+            href="https://www.cs.cornell.edu/courses/cs4620/2017sp/slides/06rt-textures.pdf">such as these slides from
+            Cornell's CS4620</a>.
+
+        In terms of software, we can use software such as <a
+            href="https://www.realtimerendering.com/erich/minecraft/public/mineways/">Mineways</a> to turn Minecraft
+        builds or worlds into OBJ files that can be imported in to Blender. From there, we can make any neccessary
+        changes and export them as COLLADA files for import into the Path Tracer. Since we are extending Project 3's
+        pathtracer, the computing platform will be MacOS and Windows. We don't expect renders to take substantially
+        longer, so our laptops should suffice, but we will also have access to more powerful hardware like a Ryzen 9
+        5950x for final renders.
+    </p>
+</body>
