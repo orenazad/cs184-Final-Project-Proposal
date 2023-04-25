@@ -25,7 +25,7 @@
             color: #121212;
         }
     </style>
-    <title>CS 184 Final Project Proposal</title>
+    <title>CS 184 Final Project Milestone</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
 
@@ -51,52 +51,90 @@
     <h3 align="middle">Accomplishments so far</h3>
 
     <p>
-        The primary goal of this project is to extend CS184's path tracer to support rendering minecraft
-        worlds and small builds by importing minecraft scenes into the path tracer. We are currently able 
-        to load in images from the minecraft meshing into the pathtracer from project 3. This took a lot of effort and 
-        we had to use assimp (open asset import library) to read the OBJ files and import the vertices. After importing the vertices 
-        we had to create our own triangle meshes switching from assimp 3D vector points to our own
-        Vector3D arrays. Second, we were able to load in textures and apply them to images from Minecraft. 
-        We had to do our own calculations for the textured coordinates and apply the textures we recieved from the assimp library. 
-        Finally, we have been working with blender to be able to create physcially realisitc images of minecraft scene
-        that we can import into our pathtracer.
-
-        Image below of something we were able to produce with blender.
-
-        <div align="middle">
-            <table style="width:100%">
-                <tr align="center">
-                    <td>
-                        <img src="images/blender_minecraft.jpeg" align="middle" width="400px" />
-                    </td>
-                </tr>
-                <br>
-            </table>
-        </div>
+        The primary goal of this project is to extend CS184's path tracer to support rendering small minecraft builds
+        and eventually, larger scenes. So far, we've successfuly been able to load in 3D geometry from Minecraft along
+        with it's base texture into the pathtracer. We've also successfully implemented UV mapping and the other bells
+        and whistles needed to use textures in the pathtracer. We used project 3-1 as a base, and decided to use the
+        Open Asset Import library <i>assimp</i> as our tool for importing Minecraft scenes. Refactoring the project to
+        be able to use this new library and the imported geometry has been a massive undertaking so far, and there is
+        still more to do. However, it has been quite promising so far. Additionally, we included <i>stb_image</i> in
+        order to load the textures images.
+        <br><br>
+        Currently we use <i>assimp</i> to read in all the vertices and their corresponding textures from an OBJ and MTL
+        file into the scene. From the vertices, we create our triangle primitives that populate the BVH. We are still
+        using the included COLLADA reader for lights and the camera however, but we will be scrapping that in the
+        future. We've also created a new class called <i>Textured Triangle</i> which extends the Primitive class, but
+        holds a texture and samples the texture at the ray-triangle intersection point.
+        <br><br>
+        Finally, we also did some work in Blender to create path traced renders of minecraft builds to learn more about
+        how textures work in path tracing and what we might expect. Here is an image we produced in Blender using the
+        Cycles renderer.
     </p>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/milestone/blender_minecraft.jpeg" align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <h3 align="middle">Preliminary Results</h3>
 
-    <p> As you can see we are able to load a Minecraft image in the cornell box but we are having trouble loading in 
-        the lights so we need to find a way to load in the lights since OBJ files only contain vertices and faces. 
-        Currently we are loading the initial scene from Cbunny.DAE this allows us to grab the lights and camera. From there
-        we load in our own image to construct the BVH and use the OBJ file to get all the vertices and textures from the
-        Minecraft image.</p>
-  
-    <h3 align="middle"> Reflection and updating Roadmap </h3>
+    <p> We are quite happy with our preliminary results, and we think the pathtraced output looks amazing! As you can
+        see, we loaded a small minecraft build into the
+        traditional cornell box, and got a great looking image as a result. In the future, we will be able to use larger
+        scenes as we work on some of the project infrastructure, in particular, using a different format for our 3D
+        scene like FBX or COLLADA with <i>assimp</i>. Further, this scene only uses the base minecraft texture. As
+        stated in our proposal, we plan to include Minecraft's PBR textures as well for an even better looking result.
+    </p>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/milestone/CBTorchPole.png" align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <p>
-        We have been able to implement the functionality to import OBJ files from Minecraft as we wanted to in week 1. 
-        Yet, we have been struggling to fix the issues of dealing with lights and the camera with the built in collad parser from 
-        project 3-1. This caused issues and has led us to be a bit behind schedule since we are working on fixing this issue. Luckily, 
-        we have been able to work on implementing textured maps and have got that to work. Which is what we wanted to finish by week 2. 
-        We plan on continuing to fix the lighting and file problems, and hope to start on implementing PBR maps to get highly realistic images.
-        We are mainly on schedule but have fallen behind about a week so it seems unlikely we will be able to hit our stretch goals that 
-        we first set in our project proposal. 
-        
-        Our new updated plan:
-        First half of the Week: Be able to fix the file formatting issues so we can introduce our own lights and camera in the next couple days. 
-        Second half of the week and next week: We plan on implementing more textures so we can create PBR images.
+        We also worked a bit on the OpenGL side of the pathtracer to allow us to see the Minecraft textures in the
+        rasterized preview!
+    </p>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/milestone/CBTorchPolePreview.png" align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <h3 align="middle"> Reflection and Updated Roadmap </h3>
+
+    <p>
+        We have been able to implement much of the important functionality into the pathtracer so far. Still, we must
+        work on the infrastructure to support lights and the camera through one file (rather than a split COLLADA and
+        OBJ file), as well as the PBR effects and textures. As certain issues like importing files has proven to be a
+        larger challenge than expected, we don't persay plan on hitting our stretch goals. However, we are very happy
+        with the progress so far and believe that the final result will be quite nice.
+        <br><br>
+        From here the work will mainly be split into two categories:
+    <ul>
+        <li>Project Infrastructure: Working on importing larger scenes and using a more comprehensive file format and
+            importing system.</li>
+        <li>Physically Based Rendering: Working on using Minecraft's other PBR textures to produce great images with
+            more advanced effects.</li>
+    </ul>
+    We will be working on these side by side in the next two weeks. If all goes well, we will investigate some stretch
+    goals and additional nuance that might be fun to add to the project!
 
     </p>
 </body>
