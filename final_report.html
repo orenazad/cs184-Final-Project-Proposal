@@ -69,6 +69,11 @@
         Roughness Map, Emissive Map, and a Metallic map. We incorporated all of these into one large PBRBSDF which is
         efficiently created for each pixel on a texture and shared across an entire mesh. Now we can render some pretty
         images!
+
+
+        We used emissive BSDF to model emissive materials, and we combined microfacet BSDF with diffuse BSDF to form a mixed
+        BSDF that can model partially metallic texture. We also applied normal map so that the objects in the scene could have
+        more details.
     </p>
 
 
@@ -93,9 +98,16 @@
         project.
         <br><br>
         In order to load the Camera, geometry, and lighting from one COLLADA file,
-        <br> </br>
-        ADD INFO ABOUT PBR
+        <br><br>
+        The final part of this project was to implement PBR using the imported mappings.
+        We reused the implementations of various BSDFs from project 3-2 for various components 
+        of PBR. Then we combined these BSDFs together to form a new BSDF class, <i> PBRBSDF </i>
+        to represent a mixture of these BSDFs. Speficially, we set the radience in <i> PBRBSDF </i>
+        to model the emissive map, and we stored a microfacet BSDF and a diffuse BSDF within <i> PBRBSDF </i>
+        so that we can combine them in a probablistic way when we need to sample from <i> PBRBSDF </i>.
+        </p>
     </p>
+
 
     <h4 align="middle"> Problems </h4>
 
@@ -112,6 +124,11 @@
         <br> </br>
         ADD INFO ABOUT CAMERA AND COLLADA files
         <br> </br>
+
+        One challenge for PBR was combining the different maps together. Among the these maps, the emissive map and the normal map
+        were independent of other maps and we handled them separately, but the rest are not. To combine the microfacet BSDF and 
+        the diffuse BSDF together for sampling, we flip a coin to decide which one to use. We also adjusted the probablistic
+        distribution of the sample so that the results looks more natural.
     </p>
     <h5 align="middle"> Metallic Maps </h5>
 
@@ -165,13 +182,15 @@
 
     <h4 align="middle"> Lessons Learned </h4>
 
-    <p>
-        In the first project we learned about importing info from OBJ and MTL files using the Open Asset Import Library.
-        Additionally, we learned about implementing UV mapping and textures using the information from <i>assimp</i>.
-        <br> </br>
-        ADD INFO ABOUT CAMERA AND COLLADA files
-        <br> </br>
-        ADD INFO ABOUT PBR
+    <p> 
+     In the first project we learned about importing info from OBJ and MTL files using the Open Asset Import Library. 
+     Additionally, we learned about implementing UV mapping and textures using the information from <i>assimp</i>. 
+     <br> </br>
+     ADD INFO ABOUT CAMERA AND COLLADA files
+     <br> </br>
+     ADD INFO ABOUT PBR
+
+    After implementing the PBR components, we learned how to mix different BSDFs together given relevant parameters.
     </p>
 
     </p>
@@ -235,7 +254,7 @@
         <li>Oren Azad - Importing Textures, Materials, Geometry, Lighting, and Camera from different 3D files. UV
             Mapping and diffuse textured Raytracing, OpenGL rasterization Preview. Worked a bit on PBR textures.</li>
         <li>Varun Srivastava - </li>
-        <li>Arthur Pan - </li>
+        <li>Arthur Pan - Worked on adjusting metalic mappings and overall PBR</li>
         <li>Omer Sasson - Worked on integrating Pathtracer with information
             from OBJ and MTL files and helped implement UV mapping for textures</li>
     </ul>
