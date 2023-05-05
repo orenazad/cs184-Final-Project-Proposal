@@ -24,6 +24,19 @@
         kbd {
             color: #121212;
         }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .image-container img {
+            height: 400px;
+            margin-right: 10px;
+        }
+        .image-container img:last-child {
+            margin-right: 0;
+        }
     </style>
     <title>CS 184 Final Project Milestone</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -48,9 +61,9 @@
     <h1 align="middle">Final Project: Minecraft Path Tracing and Physically Based Renderer Milestone Page</h1>
     <h2 align="middle">Oren Azad, Omer Sasson, Varun Srivastava, Arthur Pan</h2>
     <h3 align="middle"> <a
-            href="https://docs.google.com/presentation/d/1eY_JShidrru8E_9M4Y3fB4bo0ZG4xDaYMYQa2luVEt0/edit?usp=sharing">
+            href="https://docs.google.com/presentation/d/1QaE9mQK04J4OdzJnbJiFXqHeNatr90M2XD6SatOKVCg/edit#slide=id.p1">
             Presentation Slides</a> </h3>
-    <h3 align="middle"> <a href="https://www.youtube.com/watch?v=ToPogbx_WCM"> Video</a> </h3>
+    <h3 align="middle"> <a href=""> Video MAKE THE NEW VIDEO AND PUT THE LINK HERE</a> </h3>
 
     <h3 align="middle">Abstract</h3>
 
@@ -71,8 +84,10 @@
         images!
 
 
-        We used emissive BSDF to model emissive materials, and we combined microfacet BSDF with diffuse BSDF to form a mixed
-        BSDF that can model partially metallic texture. We also applied normal map so that the objects in the scene could have
+        We used emissive BSDF to model emissive materials, and we combined microfacet BSDF with diffuse BSDF to form a
+        mixed
+        BSDF that can model partially metallic texture. We also applied normal map so that the objects in the scene
+        could have
         more details.
     </p>
 
@@ -97,42 +112,60 @@
         to use textures, allowing us to get a rasterized preview of the scene! This was super useful throughout the
         project.
         <br><br>
-        In order to load the Camera, geometry, and lighting from one COLLADA file,
-        <br><br>
-        The final part of this project was to implement PBR using the imported mappings.
-        We reused the implementations of various BSDFs from project 3-2 for various components 
-        of PBR. Then we combined these BSDFs together to form a new BSDF class, <i> PBRBSDF </i>
-        to represent a mixture of these BSDFs. Speficially, we set the radience in <i> PBRBSDF </i>
-        to model the emissive map, and we stored a microfacet BSDF and a diffuse BSDF within <i> PBRBSDF </i>
-        so that we can combine them in a probablistic way when we need to sample from <i> PBRBSDF </i>.
-        </p>
+        In order to load the Camera, geometry, and lighting from one COLLADA file, some more major changes had to be
+        made. COLLADA files, and assimp consequently, don't just store the vertices in a global space. Rather, their is
+        a heirarchy with transforms for each layer, which are relative to the transforms above them. So in order to
+        import anything into the scene, we needed to traverse this heirarchy, and compute the transform at each layer.
+        We could then use this to transform our camera, lights, and geometry into the correct position. This also
+        necessitated a rewrite of the camera class, with the goal of having our camera exactly match the camera setup in
+        Blender when we are creating the COLLADA files, and being able to control the camera more intuitively. In order
+        to do this, we setup a new system for the camera. Rather than using <code>phi</code>, <code>theta</code> and
+        <code>targetPos</code> to control where the camera is looking, we use <code>viewDirection</code> and
+        <code>upDirection</code>. This allowed us to more easily import the camera into the desired position, but also
+        required rewriting the functions to rotate the camera around, which was quite interesting! We have methods to
+        rotate on the roll, yaw, and pitch axis separately, and afterwards we compute the new c2w vector from the
+        <code>upDirection</code> and <code>viewDirection</code>. Additionally, we make sure to always rotate on the
+        yaw-axis before the pitch-axis, and follow the mantra "Pitch Locally, Yaw Globally", in order to avoid camera
+        roll. This took a long time to figure out but was an interesting lesson in 3D camera movement!
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/final/A9nOC.gif" align="middle" width="200 px" />
+                </td>
+                <td>
+                    <img src="images/final/QJRYD.gif" align="middle" width="200 px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    The final part of this project was to implement PBR using the imported mappings.
+    We reused the implementations of various BSDFs from project 3-2 for various components
+    of PBR. Then we combined these BSDFs together to form a new BSDF class, <i> PBRBSDF </i>
+    to represent a mixture of these BSDFs. Speficially, we set the radience in <i> PBRBSDF </i>
+    to model the emissive map, and we stored a microfacet BSDF and a diffuse BSDF within <i> PBRBSDF </i>
+    so that we can combine them in a probablistic way when we need to sample from <i> PBRBSDF </i>.
     </p>
 
 
-    <h4 align="middle"> Problems </h4>
+    <h3 align="middle"> Problems </h3>
 
     <p>
-        The main problems we encountered during this first part of the project were refactoring code to use
-        <i>assimp's</i>
-        functions and variables and implementing textures when images are imported upside down. We spent extensive time
-        reading
-        through <i> assimp </i> documentation to integrate assimp into the project 3-1 Pathtracer. The OBJ files we were
-        given
-        put the y coordinate of 0 at the bottom instead of the top so when we applied texture mapping the textures would
-        be upside down.
-        To fix this we used the STB image library to flip images vertically on load.
-        <br> </br>
-        ADD INFO ABOUT CAMERA AND COLLADA files
-        <br> </br>
+        One of the largest problems encountered during the first part of the project was refactoring the code to be able
+        to import geometry and scene details as we liked. We also needed to do a lot of refactoring to allow the
+        <i>camera</i> to control the <i>window's</i> aspect ratio, rather than the window controlling the camera's FOV.
+        This was a monumental task, but was necessary to be able for our goal in having a camera that matches Blender.
 
-        One challenge for PBR was combining the different maps together. Among the these maps, the emissive map and the normal map
-        were independent of other maps and we handled them separately, but the rest are not. To combine the microfacet BSDF and 
-        the diffuse BSDF together for sampling, we flip a coin to decide which one to use. We also adjusted the probablistic
-        distribution of the sample so that the results looks more natural.
+        One challenge for PBR was combining the different maps together. Among the these maps, the emissive map and the
+        normal map were independent of other maps and we handled them separately, but the rest are not. To combine the
+        microfacet BSDF and the diffuse BSDF together for sampling, we flip a coin to decide which one to use. We also
+        adjusted the probablistic distribution of the sample so that the results looks more natural.
     </p>
     <h5 align="middle"> Metallic Maps </h5>
 
-    <p>One issue we ran into was Minecraft's <i>Metallic Maps</i>. From Microsoft, we know that tetallic maps are are a
+    <p>One issue we ran into was Minecraft's <i>Metallic Maps</i>. From Microsoft, we know that metallic maps are are a
         grayscale texture which at each pixel, determines how metallic the block is. However, this concept doesn't
         really fit into the Microfacet BSDF model, and there is an extreme lack of documentation on how Microsoft and
         NVIDIA actually use the metallic map themselves. The key problem is that in our Microfacet model, we use a
@@ -148,7 +181,7 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/final/crafting_table.jp2" align="middle" width="800px" />
+                    <img src="images/final/crafting_table.jp2" align="middle" height="300px" />
                 </td>
             </tr>
         </table>
@@ -182,59 +215,41 @@
 
     <h4 align="middle"> Lessons Learned </h4>
 
-    <p> 
-     In the first project we learned about importing info from OBJ and MTL files using the Open Asset Import Library. 
-     Additionally, we learned about implementing UV mapping and textures using the information from <i>assimp</i>. 
-     <br> </br>
-     ADD INFO ABOUT CAMERA AND COLLADA files
-     <br> </br>
-     ADD INFO ABOUT PBR
-
-    After implementing the PBR components, we learned how to mix different BSDFs together given relevant parameters.
+    <p>
+        The first part of the project was a great experience in refactoring code and how 3D file formats work. It was
+        also a great lesson in the upsides and downsides of using open-source libraries, and how to read proper
+        documentation and work with something you haven't developed yourself. Additionally, we learned more about
+        implementing UV mapping and textures in a pathtracer.
+        <br> </br>
+        One of the most interesting parts of the project was implementing the new camera! We had no idea that
+        programming 3D movement and rotation could be so complicated, and because it was difficult to understand our
+        issues, they were hard to fix. However, we learned alot about movement and rotation in 3D space as we worked on
+        getting our camera to move intuivetly, which isn't as simple as you would think!
+        <br> </br>
+        After implementing the PBR components, we learned how to mix different BSDFs together given relevant parameters.
+        We learned about several different approaches, including using a probabilistic model, and combining BSDFs
+        together mathematically.
     </p>
 
     </p>
 
     <h3 align="middle"> Final Results </h3>
 
-    <div align="middle">
-        <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/final/new_pbr_final/minecraftCB_AVPBR_s8192_adaptive_l1_m20_r2000_2000.png"
-                        align="middle" width="800px" />
-                </td>
-            </tr>
-        </table>
+    <div class="image-container">
+        <img src="images/final/new_pbr_final/minecraftCB_AVPBR_s8192_adaptive_l1_m20_r2000_2000.png" />
+        <img src="images/final/new_pbr_final/ethoSheepFarmAVPBR_s4096_adaptive_l1_m20_r2000_2000.png" />
     </div>
-
-    <div align="middle">
-        <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/final/new_pbr_final/ethoSheepFarmAVPBR_s4096_adaptive_l1_m20_r2000_2000.png"
-                        align="middle" width="800px" />
-                </td>
-            </tr>
-        </table>
+    <br>
+    <div class="image-container">
+        <img src="images/final/new_pbr_final/geode_AVPBR_s2048_adaptive_l1_m40_r2000_2000.png" />
+        <img src="images/final/new_pbr_final/minecraftCBTorch_AVPBR_s8192_adaptive_l1_m200_r2000_2000.png" />
     </div>
-
+    <br>
     <div align="middle">
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/final/new_pbr_final/geode_AVPBR_s2048_adaptive_l1_m40_r2000_2000.png"
-                        align="middle" width="800px" />
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div align="middle">
-        <table style="width:100%">
-            <tr align="center">
-                <td>
-                    <img src="images/final/new_pbr_final/minecraftCBTorch_AVPBR_s8192_adaptive_l1_m200_r2000_2000.png"
+                    <img src="images/final/new_pbr_final/ethoStatue_AVPBR_s4096_adaptive_l8_m20_r2000_2000.png"
                         align="middle" width="800px" />
                 </td>
             </tr>
@@ -246,6 +261,9 @@
 
     <ul>
         <li>Open Asset Library: https://github.com/assimp/assimp </li>
+        <li>https://gamedev.stackexchange.com/questions/136174/im-rotating-an-object-on-two-axes-so-why-does-it-keep-twisting-around-the-thir
+        </li>
+        <li>https://learn.microsoft.com/en-us/minecraft/creator/documents/rtxpbrintro</li>
     </ul>
 
     <h3 align="middle"> Contributions </h3>
