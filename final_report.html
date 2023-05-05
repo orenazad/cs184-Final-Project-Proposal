@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <style>
+        body {
+            background-color: white;
+            padding: 100px;
+            width: 1000px;
+            margin: auto;
+            text-align: left;
+            font-weight: 300;
+            font-family: 'Open Sans', sans-serif;
+            color: #121212;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        kbd {
+            color: #121212;
+        }
+    </style>
+    <title>CS 184 Final Project Milestone</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+
+</head>
+
+
+<body>
+
+    <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2023</h1>
+    <h1 align="middle">Final Project: Minecraft Path Tracing and Physically Based Renderer Milestone Page</h1>
+    <h2 align="middle">Oren Azad, Omer Sasson, Varun Srivastava, Arthur Pan</h2>
+    <h3 align="middle"> <a href="https://docs.google.com/presentation/d/1eY_JShidrru8E_9M4Y3fB4bo0ZG4xDaYMYQa2luVEt0/edit?usp=sharing"> Presentation Slides</a> </h3>
+    <h3 align="middle"> <a href="https://www.youtube.com/watch?v=ToPogbx_WCM"> Video</a> </h3>
+
+    <h3 align="middle">Abstract</h3>
+
+    <p> 
+        The primary goal of this project is to extend CS184's path tracer to support beautifully rendering minecraft
+        worlds and small builds by importing minecraft scenes into the path tracer. Our first task was to create a proof 
+        of concept and import all the materials and geometry into our pathtracer. We used <i>assimp</i> to load in the files, 
+        vertices, and textures. To load in the geometry and textures we successfully refactored importing and creating triangles, 
+        UV mapping, and the other bells and whistles needed to use textures in the pathtracer. From here, we worked on loading in 
+        full scenes through COLLADA files, and rewriting the pathtracer's camera class. Before rewriting the code we used the pre built camera and light
+        settings from the Cornell box's COLLADA files. After being able to load full scenes we worked on implementing PBR in our path tracer. 
+        ADD INFO ABOUT PBR
+    </p>
+
+
+    <h3 align="middle">Technical Approach</h3>
+
+    <h4 align="middle"> Summary </h4>
+
+    <p> 
+     Our first goal, as stated above, was laoding in the geometry and textures. 
+     We Used OBJ/MTL files for the materials and geometry, and used the course’s 
+     original COLLADA files for the lights and camera. To load in the images we used 
+     Open Asset Import Library (assimp) to load in the vertices and textures from an 
+     OBJ and MTL file. Then we rewrote the Triangle class constructor to take in vertices, 
+     normals, and the triangle's material from <i>assimp</i>. Then, we moved on to implementing
+     the Minecraft textures. We created a new triangle class, <i> TexturedTriangles </i>
+     so that we could differentiate between textured and untextured triangles as they have different
+     draw and intersection method which returns a BSDF with the texture’s color at the point of intersection.
+     Additionally, we implemented UV map textures to triangles and created a BSDF for each pixel in the texture.
+     <br> </br>
+     ADD INFO ABOUT CAMERA AND COLLADA files
+     <br> </br>
+     ADD INFO ABOUT PBR
+     </p>
+   
+    <h4 align="middle"> Problems </h4>
+
+    <p> 
+     The main problems we encountered during this first part of the project were refactoring code to use <i>assimp's</i>
+     functions and variables and implementing textures when images are imported upside down. We spent extensive time reading 
+     through <i> assimp </i> documentation to integrate assimp into the project 3-1 Pathtracer. The OBJ files we were given 
+     put the y coordinate of 0 at the bottom instead of the top so when we applied texture mapping the textures would be upside down. 
+     To fix this we used the STB image library to flip images vertically on load. 
+     <br> </br>
+     ADD INFO ABOUT CAMERA AND COLLADA files
+     <br> </br>
+     ADD INFO ABOUT PBR 
+     </p>
+
+     <h4 align="middle"> Lessons Learned </h4>
+
+    <p> 
+     In the first project we learned about importing info from OBJ and MTL files using the Open Asset Import Library. 
+     Additionally, we learned about implementing UV mapping and textures using the information from <i>assimp</i>. 
+     <br> </br>
+     ADD INFO ABOUT CAMERA AND COLLADA files
+     <br> </br>
+     ADD INFO ABOUT PBR 
+     </p>
+
+    </p>
+
+    <h3 align="middle"> Results </h3>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/final/pbr/minecraftCB_AVPBR_s4096_adaptive_l1_m20_r2000_2000.png" align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/final/pbr/ethoSheepFarm_AVPBR_s2048_adaptive_l1_m10_r2000_2000.png" align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <h3 align="middle"> References </h3>
+
+    <ul>
+        <li>Open Asset Library: https://github.com/assimp/assimp </li>
+    </ul>
+
+    <h3 align="middle"> Contributions </h3>
+
+    <ul>
+        <li>Oren Azad - </li>
+        <li>Varun Srivastava - </li>
+        <li>Arthur Pan - </li>
+        <li>Omer Sasson - Worked on integrating Pathtracer with information 
+            from OBJ and MTL files and helped implement UV mapping for textures</li>
+    </ul>
