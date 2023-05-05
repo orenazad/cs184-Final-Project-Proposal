@@ -47,20 +47,28 @@
     <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2023</h1>
     <h1 align="middle">Final Project: Minecraft Path Tracing and Physically Based Renderer Milestone Page</h1>
     <h2 align="middle">Oren Azad, Omer Sasson, Varun Srivastava, Arthur Pan</h2>
-    <h3 align="middle"> <a href="https://docs.google.com/presentation/d/1eY_JShidrru8E_9M4Y3fB4bo0ZG4xDaYMYQa2luVEt0/edit?usp=sharing"> Presentation Slides</a> </h3>
+    <h3 align="middle"> <a
+            href="https://docs.google.com/presentation/d/1eY_JShidrru8E_9M4Y3fB4bo0ZG4xDaYMYQa2luVEt0/edit?usp=sharing">
+            Presentation Slides</a> </h3>
     <h3 align="middle"> <a href="https://www.youtube.com/watch?v=ToPogbx_WCM"> Video</a> </h3>
 
     <h3 align="middle">Abstract</h3>
 
-    <p> 
-        The primary goal of this project is to extend CS184's path tracer to support beautifully rendering minecraft
-        worlds and small builds by importing minecraft scenes into the path tracer. Our first task was to create a proof 
-        of concept and import all the materials and geometry into our pathtracer. We used <i>assimp</i> to load in the files, 
-        vertices, and textures. To load in the geometry and textures we successfully refactored importing and creating triangles, 
-        UV mapping, and the other bells and whistles needed to use textures in the pathtracer. From here, we worked on loading in 
-        full scenes through COLLADA files, and rewriting the pathtracer's camera class. Before rewriting the code we used the pre built camera and light
-        settings from the Cornell box's COLLADA files. After being able to load full scenes we worked on implementing PBR in our path tracer. 
-        ADD INFO ABOUT PBR
+    <p>
+        The primary goal of this project was to extend CS184's path tracer to support beautifully rendering minecraft
+        worlds and small builds by importing minecraft scenes into the path tracer. Our first task was to create a proof
+        of concept and import all the diffuse (base color) materials and geometry into our pathtracer. We used
+        <i>assimp</i> to load in the files,
+        vertices, and textures. To load in the geometry and textures we successfully refactored much of the projects
+        scene creation system,
+        worked on UV mapping, and developed many other bells and whistles needed to use textures in the pathtracer
+        effeciently. From here, we worked on loading in
+        full scenes with lighting and camera through COLLADA files, and which required rewriting the pathtracers camera
+        class. With the much of the work done for to be able to load in large scenes, cameras, lights, textures, and
+        materials, we moved on to Physically Based Rendering. Minecraft has 4 different PBR maps that: Normal Map,
+        Roughness Map, Emissive Map, and a Metallic map. We incorporated all of these into one large PBRBSDF which is
+        efficiently created for each pixel on a texture and shared across an entire mesh. Now we can render some pretty
+        images!
     </p>
 
 
@@ -68,57 +76,114 @@
 
     <h4 align="middle"> Summary </h4>
 
-    <p> 
-     Our first goal, as stated above, was laoding in the geometry and textures. 
-     We Used OBJ/MTL files for the materials and geometry, and used the course’s 
-     original COLLADA files for the lights and camera. To load in the images we used 
-     Open Asset Import Library (assimp) to load in the vertices and textures from an 
-     OBJ and MTL file. Then we rewrote the Triangle class constructor to take in vertices, 
-     normals, and the triangle's material from <i>assimp</i>. Then, we moved on to implementing
-     the Minecraft textures. We created a new triangle class, <i> TexturedTriangles </i>
-     so that we could differentiate between textured and untextured triangles as they have different
-     draw and intersection method which returns a BSDF with the texture’s color at the point of intersection.
-     Additionally, we implemented UV map textures to triangles and created a BSDF for each pixel in the texture.
-     <br> </br>
-     ADD INFO ABOUT CAMERA AND COLLADA files
-     <br> </br>
-     ADD INFO ABOUT PBR
-     </p>
-   
+    <p>
+        We started by making sure that we can load in geometry and textures. To do this, we used both the course's
+        COLLADA file, and our own OBJ and MTL files. To do so, we use a program called Mineways to export Minecraft
+        worlds as OBJ and MTL files. Later, we can bring these files into Blender to re-export them as COLLADA files,
+        and setup the camera, lights, etc. So, we used the courses Cornell Box model, and brought our minecraft model
+        together, loading separate things from both. With this, we could work on the main work needed, UV mapping and
+        textures for the pathtracer. At first, we simply returned a diffuseBSDF with the color of the sampled pixel on
+        the texture at the point of intersection. We also had to make sure to sample the texture's alpha values to make
+        sure we don't count intersections where the texture is completely clear. In order to achieve all this, we
+        created a new Primitive, called <i>Textured Triangle</i>, which holds texture coordinates, the texture, and has
+        a different intersection function in order to calculate the exact point of intersection and return the correct
+        color. We used Open Asset Import Library <i>assimp</i> to load our OBJ and MTL files, and later we used this to
+        load in the full COLLADA file. At this step, we also rewrote the TexturedTriangles <code>draw()</code> function
+        to use textures, allowing us to get a rasterized preview of the scene! This was super useful throughout the
+        project.
+        <br><br>
+        In order to load the Camera, geometry, and lighting from one COLLADA file,
+        <br> </br>
+        ADD INFO ABOUT PBR
+    </p>
+
     <h4 align="middle"> Problems </h4>
 
-    <p> 
-     The main problems we encountered during this first part of the project were refactoring code to use <i>assimp's</i>
-     functions and variables and implementing textures when images are imported upside down. We spent extensive time reading 
-     through <i> assimp </i> documentation to integrate assimp into the project 3-1 Pathtracer. The OBJ files we were given 
-     put the y coordinate of 0 at the bottom instead of the top so when we applied texture mapping the textures would be upside down. 
-     To fix this we used the STB image library to flip images vertically on load. 
-     <br> </br>
-     ADD INFO ABOUT CAMERA AND COLLADA files
-     <br> </br>
-     ADD INFO ABOUT PBR 
-     </p>
+    <p>
+        The main problems we encountered during this first part of the project were refactoring code to use
+        <i>assimp's</i>
+        functions and variables and implementing textures when images are imported upside down. We spent extensive time
+        reading
+        through <i> assimp </i> documentation to integrate assimp into the project 3-1 Pathtracer. The OBJ files we were
+        given
+        put the y coordinate of 0 at the bottom instead of the top so when we applied texture mapping the textures would
+        be upside down.
+        To fix this we used the STB image library to flip images vertically on load.
+        <br> </br>
+        ADD INFO ABOUT CAMERA AND COLLADA files
+        <br> </br>
+    </p>
+    <h5 align="middle"> Metallic Maps </h5>
 
-     <h4 align="middle"> Lessons Learned </h4>
+    <p>One issue we ran into was Minecraft's <i>Metallic Maps</i>. From Microsoft, we know that tetallic maps are are a
+        grayscale texture which at each pixel, determines how metallic the block is. However, this concept doesn't
+        really fit into the Microfacet BSDF model, and there is an extreme lack of documentation on how Microsoft and
+        NVIDIA actually use the metallic map themselves. The key problem is that in our Microfacet model, we use a
+        Complex IOR to represent different metals. Which one should be used to represent all these different pixels on
+        the Metallic map? No information is provided as to what metal should be used at a certain pixel, and there is no
+        method of converting from a diffuse color to the complex IOR needed to represent it. So, we decided to use a
+        bunch of known complex IOR values and default to those. Anything that contains the world "gold", for example,
+        uses gold's IOR. This is done for Copper and Iron as well. However, this can't catch all cases. For example,
+        look at the picture of the crafting table below.
+    </p>
 
-    <p> 
-     In the first project we learned about importing info from OBJ and MTL files using the Open Asset Import Library. 
-     Additionally, we learned about implementing UV mapping and textures using the information from <i>assimp</i>. 
-     <br> </br>
-     ADD INFO ABOUT CAMERA AND COLLADA files
-     <br> </br>
-     ADD INFO ABOUT PBR 
-     </p>
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/final/crafting_table.jp2" align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <p>Notice the metallic look of the tools on the side! These are the cool details that make for beautiful images. In
+        order to implement these, we continue with using a known set of complex IOR values, but map that to a range of
+        RGB values. For each metallic pixel on a texuture that doesn't contain a keyword, we find whichever RGB and IOR
+        pair is closest to the sampled diffuse color at that pixel. This allows for small details, like copper or iron
+        accents on various textures to be rendered correctly!</p>
+
+    <h5 align="middle"> File Format Fun </h5>
+
+    <p>There were many considerations to take into account when choosing a file format. Our first implementation used
+        OBJ and MTL for the geometry, and COLLADA for the lights and camera. However, we wanted one file to rule them
+        all! This discarded OBJ and MTL off that bat, as they didn't support camera or lights. We looked into several
+        other options, like COLLADA, FBX, USD, and GLTF 2.0. Here, we see some of the real-world problems with different
+        formats. For example, <i>assimp</i> doesn't support all of GLTF's extensions, which meant no lights for us. USD
+        sounds like it could be great, but <i>assimp</i> couldn't open that either! Since COLLADA doesn't support PBR
+        materials, this only left us with FBX. However, after implementing it, we found the <i>assimp's</i> FBX loader
+        has some bugs in it. This left us with COLLADA. Luckily, since Minecraft textures have a smart naming scheme, we
+        realized we didn't need COLLADA to support PBR. The PBR textures in minecraft are all named identically to their
+        diffuse texture, except with an additional suffix. We could load the diffuse texture path through the COLLADA
+        file and look for the PBR textures ourselves! <i>assimp's</i> COLLADA implementation still had some bugs though.
+        For example, it couldn't properly parse area lights from COLLADA files, and read them as point lights instead.
+        We had to develop some work arounds for this, but it was a good lesson in balancing what makes sense in theory,
+        verse real-world issues and complications.
+    </p>
+
+
+
+    <h4 align="middle"> Lessons Learned </h4>
+
+    <p>
+        In the first project we learned about importing info from OBJ and MTL files using the Open Asset Import Library.
+        Additionally, we learned about implementing UV mapping and textures using the information from <i>assimp</i>.
+        <br> </br>
+        ADD INFO ABOUT CAMERA AND COLLADA files
+        <br> </br>
+        ADD INFO ABOUT PBR
+    </p>
 
     </p>
 
-    <h3 align="middle"> Results </h3>
+    <h3 align="middle"> Final Results </h3>
 
     <div align="middle">
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/final/pbr/minecraftCB_AVPBR_s4096_adaptive_l1_m20_r2000_2000.png" align="middle" width="800px" />
+                    <img src="images/final/new_pbr_final/minecraftCB_AVPBR_s8192_adaptive_l1_m20_r2000_2000.png"
+                        align="middle" width="800px" />
                 </td>
             </tr>
         </table>
@@ -128,11 +193,35 @@
         <table style="width:100%">
             <tr align="center">
                 <td>
-                    <img src="images/final/pbr/ethoSheepFarm_AVPBR_s2048_adaptive_l1_m10_r2000_2000.png" align="middle" width="800px" />
+                    <img src="images/final/new_pbr_final/ethoSheepFarmAVPBR_s4096_adaptive_l1_m20_r2000_2000.png"
+                        align="middle" width="800px" />
                 </td>
             </tr>
         </table>
     </div>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/final/new_pbr_final/geode_AVPBR_s2048_adaptive_l1_m40_r2000_2000.png"
+                        align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/final/new_pbr_final/minecraftCBTorch_AVPBR_s8192_adaptive_l1_m200_r2000_2000.png"
+                        align="middle" width="800px" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
 
     <h3 align="middle"> References </h3>
 
@@ -143,9 +232,10 @@
     <h3 align="middle"> Contributions </h3>
 
     <ul>
-        <li>Oren Azad - </li>
+        <li>Oren Azad - Importing Textures, Materials, Geometry, Lighting, and Camera from different 3D files. UV
+            Mapping and diffuse textured Raytracing, OpenGL rasterization Preview. Worked a bit on PBR textures.</li>
         <li>Varun Srivastava - </li>
         <li>Arthur Pan - </li>
-        <li>Omer Sasson - Worked on integrating Pathtracer with information 
+        <li>Omer Sasson - Worked on integrating Pathtracer with information
             from OBJ and MTL files and helped implement UV mapping for textures</li>
     </ul>
